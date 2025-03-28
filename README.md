@@ -60,7 +60,11 @@ To run the ros wrapper do the following:
 - Run the docker container with the following command:
 
 ```bash
-docker run -it --rm --runtime nvidia --privileged -e DISPLAY=${DISPLAY}  -e NVIDIA_DRIVER_CAPABILITIES=all -v /PATH_TO_REPOSITORY:/code -v /PATH_TO_REPOSITORY/torch_cache:/root/.cache/torch -v /tmp/.X11-unix:/tmp/.X11-unix torch --net host zs6d /bin/bash
+docker run -it --rm --runtime nvidia --privileged \
+  -e DISPLAY=${DISPLAY} -e NVIDIA_DRIVER_CAPABILITIES=all \
+  -v `pwd`:/code -v `pwd`/torch_cache:/root/.cache/torch \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+ --net host zs6d /bin/bash
 ```
 Once you are inside the docker container, run the following command to check if the docker container has access to the GPU:
 
@@ -82,7 +86,11 @@ The following commands have to be run **every time** you want to start the ros c
 
 ```bash
 xhost local:docker
-docker run -it --rm --runtime nvidia --privileged -e DISPLAY=${DISPLAY}  -e NVIDIA_DRIVER_CAPABILITIES=all -v /PATH_TO_REPOSITORY:/code -v /PATH_TO_REPOSITORY/torch_cache:/root/.cache/torch -v /tmp/.X11-unix:/tmp/.X11-unix torch --net host zs6d
+docker run -it --rm --runtime nvidia --privileged \
+  -e DISPLAY=${DISPLAY}  -e NVIDIA_DRIVER_CAPABILITIES=all \
+  -v `pwd`:/code -v `pwd`/torch_cache:/root/.cache/torch \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  --net host zs6d
 ```
 
 ## Template rendering:
