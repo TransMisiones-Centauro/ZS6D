@@ -1,25 +1,41 @@
 # ZS6D
 <img src="./assets/overview.png" width="500" alt="teaser"/>
 
-We demonstrate the effectiveness of deep features extracted from self-supervised, pre-trained Vision Transformer (ViT) for Zero-shot 6D pose estimation. For more detailed information check out the corresponding [[paper](https://arxiv.org/pdf/2309.11986.pdf)].
+We demonstrate the effectiveness of deep features extracted from self-supervised, pre-trained Vision Transformer (ViT) for Zero-shot 6D pose estimation.
+For more detailed information check out the corresponding [[paper](https://ieeexplore.ieee.org/document/10611464)].
 
 ## Overview of the Pipeline:
 
 ![pipeline](./assets/ZS6D_pipeline.png)
 
-Note that this repo only deals with 6D pose estimation, you need segmentation masks as input. These can be obtained with supervised trained methods or zero-shot methods. For zero-shot we refer to [cnos](https://github.com/nv-nguyen/cnos).
+Note that this repo only deals with 6D pose estimation, you need segmentation masks as input. 
+These can be obtained with supervised trained methods or zero-shot methods. 
+For zero-shot we refer to [CNOS](https://github.com/nv-nguyen/cnos).
 
 ## Installation:
+2025/05/07 - Tested with:
+- 11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz - 1 socket, 8 cores per socket, 2 threads per core
+- 32GiB RAM - 2 x 16GiB SODIMM DDR4 Synchronous 3200 MHz
+- NVIDIA GeForce RTX 3080 Mobile 16GB
+- Ubuntu 22.04.5
+- NVIDIA Driver Version: 535.247.01
+- CUDA Version: 12.2.
+- Conda 25.3.1
+
 To setup the environment to run the code locally follow these steps:
 
+### Install Miniconda:
+[documentation](https://www.anaconda.com/docs/getting-started/miniconda/install#quickstart-install-instructions)
 ```
-conda env create -f environment.yml
-conda activate zs6d
-git submodule update --init --recursive
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+  -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm ~/miniconda3/miniconda.sh
+source ~/miniconda3/bin/activate
 ```
 
-Otherwise, run the following commands:
-
+### Create a Conda environment:
 ```
 conda create --name zs6d python=3.9
 conda activate zs6d
@@ -28,7 +44,7 @@ pip install tqdm==4.65.0
 pip install timm==0.9.16
 pip install matplotlib==3.8.3
 pip install scikit-learn==1.4.1.post1
-pip install opencv-python==4.9.0
+pip install opencv-python==4.9.0.80
 pip install git+https://github.com/lucasb-eyer/pydensecrf.git@dd070546eda51e21ab772ee6f14807c7f5b1548b
 pip install transforms3d==0.4.1
 pip install pillow==9.4.0
@@ -41,9 +57,47 @@ pip install pyopengl==3.1.1a1
 pip install pyglet==2.0.10
 pip install numba==0.59.0
 pip install jupyter==1.0.0
-git submodule update --init --recursive
 ```
 
+### Clone this repository:
+```
+git clone https://github.com/TransMisiones-Centauro/ZS6D.git
+cd ZS6D && git submodule update --init --recursive
+```
+
+## Testing:
+
+### Download templates:
+Download ycbv templates (zs6d_templates_ycbv.zip) from [this link](https://drive.google.com/file/d/1t0nk_1R931LYl-F9nrYLfk-jKxoki-0A/view?usp=sharing) into ./templates
+```
+cd ./templates && unzip zs6d_templates_ycbv.zip
+```
+
+### Render templates
+To generate templates from a object model to perform inference, we refer to the [ZS6D_template_rendering](https://github.com/haberger/ZS6D_template_rendering) repository.
+```
+python3 prepare_templates_and_gt.py --config_file \
+  zs6d_configs/template_gt_preparation_configs/cfg_template_gt_generation_ycbv.json
+```
+
+### Download dataset for testing:
+```
+mkdir -p dataset/ycbv_test_bop19
+cd dataset/ycbv_test_bop19
+export DATASET_NAME=ycbv
+export SRC=https://huggingface.co/datasets/bop-benchmark/${DATASET_NAME}/resolve/main
+wget $SRC/${DATASET_NAME}_test_bop19.zip
+unzip ycbv_test_bop19.zip
+```
+
+### Launch Jupyter server:
+```
+jupyter notebook test_zs6d.ipynb
+```
+
+![test results](./assets/test_bop19.png)
+
+<!--
 
 ### Docker setup:
 
@@ -147,6 +201,7 @@ Additionally, you have to download the corresponding [BOP test images](https://b
 
 ```python3 prepare_templates_and_gt.py --config_file zs6d_configs/template_gt_preparation_configs/your_eval_config.json```
 
+-->
 
 ## Acknowledgements
 This project is built upon [dino-vit-features](https://github.com/ShirAmir/dino-vit-features), which performed a very comprehensive study about features of self-supervised pretrained Vision Transformers and their applications, including local correspondence matching. Here is a link to their [paper](https://arxiv.org/abs/2112.05814). We thank the authors for their great work and repo.
