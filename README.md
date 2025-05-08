@@ -97,6 +97,25 @@ jupyter notebook test_zs6d.ipynb
 
 ![test results](./assets/test_bop19.png)
 
+## Docker setup:
+
+Build the Docker image:
+```
+docker build -t zs6d .
+```
+
+Launch Jupyter in a Docker container:
+```
+docker run -it --rm --network host --runtime nvidia \
+  -v .:/code -v $HOME/.cache/torch:/root/.cache/torch \
+  zs6d jupyter notebook --no-browser --allow-root
+```
+Open in your browser one of the shown URLs:
+```
+    	http://localhost:8888/tree?token=...
+    	http://127.0.0.1:8888/tree?token=...
+```
+
 <!--
 
 ### Docker setup:
