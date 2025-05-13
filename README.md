@@ -73,8 +73,11 @@ Download ycbv templates (zs6d_templates_ycbv.zip) from [this link](https://drive
 cd ./templates && unzip zs6d_templates_ycbv.zip
 ```
 
-### Render templates
+### Render templates:
 To generate templates from a object model to perform inference, we refer to the [ZS6D_template_rendering](https://github.com/haberger/ZS6D_template_rendering) repository.
+
+### Prepare templates:
+Run the preparation script with your config_file to generate your_template_gt_file.json and prepare the template descriptors and template uv maps.
 ```
 python3 prepare_templates_and_gt.py --config_file \
   zs6d_configs/template_gt_preparation_configs/cfg_template_gt_generation_ycbv.json
